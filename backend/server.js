@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import connectDB from './config/db.js'
 
 import productRoutes from './routes/productRoutes.js'
+import { errorHandler, notFound } from './middlewares/errorMiddleware.js'
 
 dotenv.config()
 
@@ -15,6 +16,12 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/products', productRoutes)
+
+//error handler for inavlid routes
+app.use(notFound)
+
+//custom error handler
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 4500
 
