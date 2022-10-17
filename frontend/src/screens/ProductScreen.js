@@ -1,24 +1,31 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Button, Card, Col, Image, ListGroup, Row } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import Rating from '../components/Rating'
 
+import { fetchProductById } from '../actions/productAction'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+
 const ProductScreen = ({ match }) => {
-  const [product, setProduct] = useState({})
+  const dispatch = useDispatch()
+
+  const { loading, error, product } = useSelector((state) => state.product)
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      const { data } = await axios.get(`/api/products/${match.params.id}`)
-
-      setProduct(data)
-    }
-
-    fetchProduct()
-  }, [match.params.id])
+    dispatch(fetchProductById(match.params.id))
+  }, [match.params.id, dispatch])
 
   return (
     <>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant={'danger'} error={error} />
+      ) : (
+        <></>
+      )}
       <LinkContainer to='/'>
         <Button variant='light'>Go Back</Button>
       </LinkContainer>
